@@ -6,7 +6,7 @@ There are many places to start start in ElectionGuard. If you're looking to deve
 
 These are the latest projects from ElectionGuard. If you're looking to contribute, these are the best places to start.
 
-[`electionguard-python`](guide/Core_Component.md#python)
+[`electionguard-python`](guide/Components.md#python)
 
 [`electionguard-web-api`](guide/Implementations.md)
 
@@ -14,4 +14,4 @@ These are the latest projects from ElectionGuard. If you're looking to contribut
 
 Pick your language of preference:
 
-[![](images/python-language.png)](guide/Core_Component.md#python)[![](images/c++-language.png)](guide/Core_Component.md#c++) [![](images/c-language.png)](guide/Core_Component.md#c_1) [![](images/c-sharp-language.png)](guide/Core_Component.md#c_2) [![](images/java.png)](https://github.com/JohnLCaron/electionguard-java)
+[![](images/python-language.png)](guide/Components.md#python)[![](images/c++-language.png)](guide/Components.md#c++) [![](images/c-language.png)](guide/Components.md#c_1) [![](images/c-sharp-language.png)](guide/Components.md#c_2) [![](images/java.png)](https://github.com/JohnLCaron/electionguard-java)

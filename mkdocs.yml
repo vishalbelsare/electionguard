@@ -15,7 +15,7 @@ nav:
     - Overview: guide/Overview.md
     - SDK: 
       - Features: guide/Features.md
-      - Core Component: guide/Core_Component.md
+      - Components: guide/Components.md
       - Implementations: guide/Implementations.md
     - Additional Topics:
       - Verifiable Election: guide/Verifiable_Election.md
