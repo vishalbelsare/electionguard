@@ -1,9 +1,11 @@
 # Features
 
-## Implementation Types
+## Component Attributes List
 
-|  Feature               |  Full                              |  Verifier                         | Encrypter                          | 
-| :--------------------- | :--------------------------------: | :-------------------------------: | :--------------------------------: |
+ElectionGuard allows different types of components to be created. Specialized components such as an encrypter do not need to have all the attributes of a fully implemented component of electionguard. This table demonstrates the necessary attributes for particular components.
+
+|  Feature               |  Full                              |  Verifier                         | Encrypter                          |  Audit |
+| :--------------------- | :--------------------------------: | :-------------------------------: | :--------------------------------: | :-----: |
 | **Ballot**             |                                    |                                   |                                    |
 | Encryption             | :fontawesome-regular-check-circle: |                                   | :fontawesome-regular-check-circle: |
 | Decryption             | :fontawesome-regular-check-circle: |                                   |                                    |
