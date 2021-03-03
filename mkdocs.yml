@@ -39,6 +39,7 @@ nav:
     - v0.85: "https://github.com/microsoft/electionguard/releases/tag/v0.85.0"
 plugins:
   - search
+  - mermaid2
 theme:
   name: material
   custom_dir: overrides
@@ -59,7 +60,11 @@ markdown_extensions:
   - meta
   - pymdownx.details
   - pymdownx.tabbed
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
