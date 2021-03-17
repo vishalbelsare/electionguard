@@ -124,13 +124,13 @@ is a function call with 4 parameters, where the 3rd parameter is itself an array
 !!! important
     An election verifier must verify the correct computation of the joint election public key and extended base hash.
 
-    (A) Joint election public key
+    (A2) Joint election public key
 
 	$$
 	K=\prod_{i=1}^n K_i  \bmod p
 	$$
 
-    (B) Extended base hash
+    (B2) Extended base hash
 
 	$$
 	\bar{Q} = H(Q,K_1,0,K_1,1,K_1,2,\ldots,K_{1,k-1},K_2,0,K_2,1,K_2,2,\ldots,K_{2,k-1},\ldots,K_{n,0},K_{n,1},K_{n,2},\ldots,K_{n,k-1})

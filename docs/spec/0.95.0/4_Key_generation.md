@@ -50,17 +50,17 @@ $$
 P_i(x) = \sum_{j=0}^{k-1} a_{i,j}x^j \bmod q
 $$
 
-Guardian $T_i$ then publishes commitments $K_{i,j} = g^{a_{i,j}} \bmod q$ for each of its random polynomial coefficients. The constant term $a_{i,0}$ of this polynomial will serve as the private key for guardian $T_i$ and will also be denoted as $K_i = K_{i,0}$.
+** Round 1** Guardian $T_i$ publishes commitments $K_{i,j} = g^{a_{i,j}} \bmod q$ for each of its random polynomial coefficients. The constant term $a_{i,0}$ of this polynomial will serve as the private key for guardian $T_i$ and will also be denoted as $K_i = K_{i,0}$.
 
 In order to prove possession of the coefficient associated with each public commitment, for each $K_{i,j}$ with $0 \le j \lt k$, guardian $T_i$ generates a Schnorr proof of knowledge for each of its coefficients.
 
 This Non-Interactive Zero-Knowledge (NIZK) proof proceeds as follows.
 
-## NIZK Shnorr proof by Guardian of knowledge for each of its coefficients
+### NIZK Shnorr proof by Guardian of knowledge for each of its coefficients
 
 Formally: NIZK Proof by Guardian $T_i$ of its knowledge of secrets $a_{i,j}$ such that $K_{i,j}= g^{a_{i,j}} \bmod p$
 
-For each $0 \le j \lt k$, Guardian $T_i$ generates random integer values $R_{i,j}$ in $Z_q$ and computes $h_{i,j}=g^{R_{i,j}} \bmod p$. Then, using the hash function SHA-256 (as defined in NIST PUB FIPS 180-4[^16]), guardian $T_i$ then performs a single hash computation $c_{i,j} = H(Q, K_{i,j}, h_{i,j} \bmod q$ and publishes the values $K_{i,j},h_{i,j},c_{i,j}$ and $u_{i,j} = (R_{i,j} + c_{i,j}a_{i,j}) \bmod q$.
+** Round 2 ** For each $0 \le j \lt k$, Guardian $T_i$ generates random integer values $R_{i,j}$ in $Z_q$ and computes $h_{i,j}=g^{R_{i,j}} \bmod p$. Then, using the hash function SHA-256 (as defined in NIST PUB FIPS 180-4[^16]), guardian $T_i$  performs a single hash computation $c_{i,j} = H(Q, K_{i,j}, h_{i,j}) \bmod q$ and publishes the values $K_{i,j},h_{i,j},c_{i,j}$ and $u_{i,j} = (R_{i,j} + c_{i,j}a_{i,j}) \bmod q$.
 
 !!! important
     An election verifier must confirm (A) and (B) for each guardian $T_i$ and for each $j \in Z_k$:
@@ -89,33 +89,82 @@ $$
     Although this formula includes double exponentiation – raising a given value to the power $\alpha^j$ – in what follows, $\alpha$ and $j$ will always be small values (bounded by $n$). This can also be reduced if desired since the same result will be achieved if the exponents $\alpha^j$ are reduced to $\alpha^j \bmod q$.
 
 To share secret values amongst each other, it is assumed that each guardian $T_i$ has previously shared an auxiliary public encryption function $E_i$ with the group.[^17]
-Each guardian $T_i$ then publishes the encryption $E_\ell ( R_{i,\ell}, P_i(\ell))$  for every other guardian $T_{\ell}$ – where $R_{i,\ell}$ is a random nonce.
 
-Guardian $T_{\ell}$ can now decrypt each $P_i(\ell)$ encrypted to its public key and verify its validity against the commitments made by $T_i$ to its coefficients $K_{i,0},K_{i,0},\ldots,K_{i,k-1},$ by confirming that the following equation holds
+** Round 3 ** After verifying (A) and (B) for all other trustees,
+each guardian $T_i$ then publishes the encryption $E_\ell ( R_{i,\ell}, P_i(\ell))$  for every other guardian $T_{\ell}$ – where $R_{i,\ell}$ is a random nonce.
+
+Guardian $T_{\ell}$ can now decrypt each $P_i(\ell)$ encrypted to its public key and verify its validity against the commitments made by $T_i$ to its coefficients $K_{i,0},K_{i,0},\ldots,K_{i,k-1},$ by confirming that the following equation (C) holds
 
 $$
 g^{P_i(\ell)} \bmod p = \prod_{j=0}^{k-1}(K_{i,j})^{\ell^j} \bmod p
 $$
 
-Guardians then publicly report having confirmed or failed to confirm this computation. If the recipient guardian $T_{\ell}$ reports not receiving a suitable value $P_i(\ell)$, it becomes incumbent on the sending guardian $T_i$ to publish this $P_i(\ell)$, together with the nonce $R_{i,\ell}$ it used to encrypt $P_i(\ell)$ under the public key $E_{\ell}$ of recipient guardian $T_{\ell}$. If guardian $T_i$ fails to produce a suitable $P_i(\ell)$ and nonce $R_{i,\ell}$ that match both the published encryption and the above equation, it should be excluded from the election and the key generation process should be restarted with an alternate guardian. If, however, the published $P_i(\ell)$ and $R_{i,\ell}$ satisfy both the published encryption and the equation above, the claim of malfeasance is dismissed and the key generation process continues undeterred.[^18]
+** Round 4 ** Guardians then publicly report having confirmed or failed to confirm this computation. If the recipient guardian $T_{\ell}$ reports not receiving a suitable value $P_i(\ell)$, it becomes incumbent on the sending guardian $T_i$ to publish this $P_i(\ell)$, together with the nonce $R_{i,\ell}$ it used to encrypt $P_i(\ell)$ under the public key $E_{\ell}$ of recipient guardian $T_{\ell}$. If guardian $T_i$ fails to produce a suitable $P_i(\ell)$ and nonce $R_{i,\ell}$ that match both the published encryption and the above equation, it should be excluded from the election and the key generation process should be restarted with an alternate guardian. If, however, the published $P_i(\ell)$ and $R_{i,\ell}$ satisfy both the published encryption and the equation above, the claim of malfeasance is dismissed and the key generation process continues undeterred.[^18]
 
 Once the baseline parameters have been produced and confirmed, all of the public commitments $K_{i,j}$ are hashed together with the base hash $Q$ to form an extended base hash $\bar{Q}$ that will form the basis of subsequent hash computations. The hash function SHA-256 will be used here and for all hash computations for the remainder of this document.
 
 !!! important
-    An election verifier must verify the correct computation of the joint election public key (A) and extended base hash (B).
+    An election verifier must verify the correct computation of the joint election public key (A2) and extended base hash (B2).
 
-    (A) Joint election public key
+    (A2) Joint election public key
 
     $$
     \bar{Q}=H(Q,K_{1,0},K_{1,1},K_{1,2},\ldots,K_{1,k-1},K_{2,0},K_{2,1},K_{2,2},\ldots,K_{2,k-1},\ldots,K_{n,0},K_{n,1},K_{n,2},\ldots,K_{n,k-1})
     $$
 
-    (B) Extended base hash
+    (B2) Extended base hash
 
     $$
     K = \prod_{i=1}^n K_i \bmod p
     $$
 
+(VT: I'd rather call these equations (D) and (E) but I don't want to break other parts of the verification spec.)
+
+## Verification in an alternative communication model
+
+In some practical scenarios, reliable broadcast may be difficult to achieve.  This section describes modified key generation and verification protocols assuming only point-to-point communication between guardians, except for two trusted broadcast steps at the end.  This is intended to model a scenario in which the guardians perform a key generation ceremony amongst themselves, then post the transcript (and their endorsement or rejection of it) on a public bulletin board before the start of voting.
+
+Assumptions:
+
+- The adversary controls up to $k-1$ guardians, chosen (statically) before the beginning of the protocol.  These may deviate arbitrarily from the protocol.
+- The other (at least $n-k +1$) guardians follow the protocol honestly.
+- There is a secure, reliable, delay-bounded, point-to-point private channel between each pair of guardians.
+- There are two public broadcasts (in the final steps of the protocol), which are guaranteed to show the same information to all viewers.
+
+Protocol:
+
+The protocol is exactly the same as the protocol in the previous section, except that values are sent via point-to-point channels rather than broadcast in Rounds 1, 2 and 3:
+
+- In Round 1, for each $ 0 \leq j,j' < k$, guardian $T_i$ sends commitment $K_{i,j'}$ to $T_j$.   (VT: It is possible we only need to send $i$'s commitment $K_{i,j}$ to $T_j$.)
+- In Round 2, for each $ 0 \leq j,j' < k$, guardian $T_i$ sends NIZK $(h_{i,j}, u_{i,j})$ to $T_j$. (VT: Again, not certain we need everyone to verify everyone else's proof, as long as each $T_j$ verifies their own.)
+- In Round 3, each guardian $T_i$ sends $( R_{i,\ell}, P_i(\ell))$ to $T_{\ell}$.
+
+The final rounds then take advantage of a public broadcast channel $BB$.
+
+** Round 4 ** The BB publishes:
+
+- the election public key $K$,
+- for each $0 \leq i < n$, the guardian public key $K_i$,
+- for each $0 \leq i,j < n$, the commitment $K_{i,j}$,
+- for each $0 \leq i,j < n$, the NIZK $(h_{i,j}, u_{i,j})$.  (VT: Possibly unnecessary, depending perhaps on whether at least one honest guardian verified it in Round 2.)
+
+Every guardian $T_i$ verifies:
+
+- that for all $0 \leq j,j', < n$, the values of $K_{i,j}$ and $(h_{i,j}, u_{i,j})$ on the BB match those they received in Rounds 1 and 2, and
+- that $K$ is correctly constructed from $K_i$ ($0 \leq i < n$).
+- that for all $0 \leq i < n$, $K_i = g^{P_i(0)} \bmod p$ (using equation (C) with $\ell = 0$).   (VT: I'm sure this must be needed in the broadcast version too, but I couldn't find it, but I didn't read the parts about "correctness of substitute data for missing guardians" very carefully.)
+
+(VT: Consider whether they need to verify (A), (B), (C), (A2), (B2) - I think not because either the values are different, in which case they complain, or the values are the same, in which case those equations have already been verified.)
+
+** Round 5 ** Each guardian publishes on the BB a bit indicating whether their verification in Round 4 passed (1) or failed (0).
+
+The attacker wins if all honest guardians publish 1 (pass), but the attacker can guess the election private key.  They get caught if at least one honest guardian complains (publishes 0).
+
+(VT: There should also be a liveness claim, i.e. that the honest parties, if there are at least k of them, can derive it.)
+
+Claim: Given the attacker assumptions above, an attacker with a non-negligible chance of winning must also have a non-negligible chance of getting caught.
+
+(VT: Actually I think we might simply be able to prove that the attacker does not have a non-negligible chance of winning.)
 
 [^15]: Shamir A.  How to Share a Secret.  (1979) Communications of the ACM.
 
