@@ -152,7 +152,6 @@ Every guardian $T_i$ verifies:
 
 - that for all $0 \leq j,j', < n$, the values of $K_{i,j}$ and $(h_{i,j}, u_{i,j})$ on the BB match those they received in Rounds 1 and 2, and
 - that $K$ is correctly constructed from $K_i$ ($0 \leq i < n$).
-- that for all $0 \leq i < n$, $K_i = g^{P_i(0)} \bmod p$ (using equation (C) with $\ell = 0$).   (VT: I'm sure this must be needed in the broadcast version too, but I couldn't find it, but I didn't read the parts about "correctness of substitute data for missing guardians" very carefully.)
 
 (VT: Consider whether they need to verify (A), (B), (C), (A2), (B2) - I think not because either the values are different, in which case they complain, or the values are the same, in which case those equations have already been verified.)
 
